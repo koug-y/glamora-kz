@@ -1,9 +1,14 @@
-import type { Locale } from "@/data/catalog";
+import type { Locale } from "@/lib/locales";
 
 const PHONE_ENV_KEY = "NEXT_PUBLIC_WHATSAPP_NUMBER";
-const rawOwnerPhone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
+const rawOwnerPhone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "";
+const ownerPhonePresent = rawOwnerPhone.trim().length > 0;
 
-if (!rawOwnerPhone) {
+export function hasOwnerPhone() {
+  return ownerPhonePresent;
+}
+
+if (!ownerPhonePresent) {
   throw new Error(
     `[glamora_kz] ${PHONE_ENV_KEY} is not set. Provide a WhatsApp number for contact links.`
   );

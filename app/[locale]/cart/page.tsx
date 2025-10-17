@@ -1,14 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import {
-  LOCALES,
-  type Locale,
-  REVALIDATE,
-} from "@/data/catalog";
 import { getDict } from "@/data/i18n";
 import { CartView } from "@/components/CartView";
+import { LOCALES, type Locale } from "@/lib/locales";
+import { DEFAULT_REVALIDATE_SECONDS } from "@/lib/catalog-fs";
 
-export const revalidate = REVALIDATE;
+export const revalidate = DEFAULT_REVALIDATE_SECONDS;
 
 type PageParams = {
   params: { locale: string };

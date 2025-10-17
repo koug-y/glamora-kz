@@ -8,9 +8,11 @@ import { useI18n } from "@/lib/i18n-client";
 import {
   composeWhatsAppMessage,
   composeQuickWhatsApp,
+  hasOwnerPhone,
   type CartItemPayload,
 } from "@/lib/whatsapp";
-import { getProductById, type Locale } from "@/data/catalog";
+import { useCatalogClient } from "@/lib/catalog-client-context";
+import type { Locale } from "@/lib/locales";
 import { useCart } from "@/store/cart";
 import { QtyStepper } from "@/components/QtyStepper";
 import { PillButton } from "@/components/PillButton";
@@ -24,13 +26,15 @@ export function CartView({ locale }: { locale: Locale }) {
   const total = useCart((state) =>
     state.items.reduce((sum, item) => sum + item.price * item.qty, 0)
   );
+  const ownerPhoneAvailable = hasOwnerPhone();
   const remove = useCart((state) => state.remove);
   const setQty = useCart((state) => state.setQty);
+  const { productsById } = useCatalogClient();
 
   const localizedItems = useMemo(
     () =>
       items.map((item) => {
-        const product = getProductById(item.id);
+        const product = productsById.get(item.id);
         const name = product ? product.name[locale] : item.name;
         const translatedSlug = product ? product.slug[locale] : undefined;
         const href =
@@ -44,10 +48,14 @@ export function CartView({ locale }: { locale: Locale }) {
           href,
         };
       }),
-    [items, locale]
+    [items, locale, productsById]
   );
 
   const waLink = useMemo(() => {
+    if (!ownerPhoneAvailable) {
+      return null;
+    }
+
     if (localizedItems.length === 0) {
       return composeQuickWhatsApp(locale, "order");
     }
@@ -59,7 +67,7 @@ export function CartView({ locale }: { locale: Locale }) {
     }));
 
     return composeWhatsAppMessage(locale, payload, total);
-  }, [localizedItems, locale, total]);
+  }, [ownerPhoneAvailable, localizedItems, locale, total]);
 
   if (localizedItems.length === 0) {
     return (
@@ -166,13 +174,19 @@ export function CartView({ locale }: { locale: Locale }) {
         <p className="text-xs leading-relaxed text-mutedInk">
           {cartPage.whatsappIntro}
         </p>
-        <PillButton
-          href={waLink}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {common.checkoutWA}
-        </PillButton>
+        {ownerPhoneAvailable && waLink ? (
+          <PillButton
+            href={waLink}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {common.checkoutWA}
+          </PillButton>
+        ) : (
+          <div className="rounded-2xl border border-border bg-surface p-3 text-center text-sm text-mutedInk">
+            {common.whatsappUnavailable}
+          </div>
+        )}
       </section>
     </div>
   );

@@ -1,31 +1,21 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import {
-  CATEGORIES,
-  LOCALES,
-  type Locale,
-  REVALIDATE,
-  getCategoryBySlug,
-  getProductsByCategory,
-} from "@/data/catalog";
 import { getDict } from "@/data/i18n";
 import { CategoryProductList } from "@/components/CategoryProductList";
 import { getSafeImagePath } from "@/lib/safe-image";
+import {
+  getCategoryBySlug,
+  getProductsByCategory,
+  sortProductsByLocale,
+  DEFAULT_REVALIDATE_SECONDS,
+} from "@/lib/catalog-fs";
+import { LOCALES, type Locale } from "@/lib/locales";
 
-export const revalidate = REVALIDATE;
+export const revalidate = DEFAULT_REVALIDATE_SECONDS;
 
 type PageParams = {
   params: { locale: string; category: string };
 };
-
-export function generateStaticParams() {
-  return LOCALES.flatMap((locale) =>
-    CATEGORIES.map((category) => ({
-      locale,
-      category: category.slug[locale],
-    }))
-  );
-}
 
 export async function generateMetadata({
   params,
@@ -36,7 +26,7 @@ export async function generateMetadata({
     notFound();
   }
 
-  const category = getCategoryBySlug(locale, params.category);
+  const category = await getCategoryBySlug(locale, params.category);
 
   if (!category) {
     notFound();
@@ -67,14 +57,14 @@ export async function generateMetadata({
   };
 }
 
-export default function CategoryPage({ params }: PageParams) {
+export default async function CategoryPage({ params }: PageParams) {
   const locale = params.locale as Locale;
 
   if (!LOCALES.includes(locale)) {
     notFound();
   }
 
-  const category = getCategoryBySlug(locale, params.category);
+  const category = await getCategoryBySlug(locale, params.category);
 
   if (!category) {
     notFound();
@@ -82,8 +72,9 @@ export default function CategoryPage({ params }: PageParams) {
 
   const dict = getDict(locale);
   const priceLabel = dict.common.priceCheck;
-  const products = getProductsByCategory(category.id).map((product) => {
-    const image = getSafeImagePath(product.image);
+  const productsRaw = await getProductsByCategory(category.id);
+  const products = sortProductsByLocale(productsRaw, locale).map((product) => {
+    const image = getSafeImagePath(product.image ?? "");
     return {
       id: product.id,
       name: product.name[locale],
@@ -109,7 +100,13 @@ export default function CategoryPage({ params }: PageParams) {
           {category.blurb[locale]}
         </p>
       </header>
-      <CategoryProductList products={products} />
+      {products.length === 0 ? (
+        <p className="rounded-3xl border border-dashed border-border bg-surface-alt p-6 text-center text-sm text-mutedInk">
+          {dict.catalogPage.empty}
+        </p>
+      ) : (
+        <CategoryProductList products={products} />
+      )}
     </section>
   );
 }

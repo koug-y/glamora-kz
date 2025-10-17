@@ -1,0 +1,22 @@
+{
+  "id": "dr-althea-amino-acid-gentle-bubble-cleanser",
+  "categoryId": "cleansers",
+  "slug": {
+    "ru": "dr-althea-amino-acid-gentle-bubble-cleanser",
+    "kk": "dr-althea-amino-acid-gentle-bubble-cleanser"
+  },
+  "name": {
+    "ru": "Dr. Althea Amino Acid Gentle Bubble Cleanser",
+    "kk": "Dr. Althea Amino Acid Gentle Bubble Cleanser"
+  },
+  "short": {
+    "ru": "Нежная умывалка с аминокислотами.",
+    "kk": "Аминқышқылдары бар жұмсақ умывалка."
+  },
+  "description": {
+    "ru": "Мягкая умывалка с аминокислотами бережно очищает кожу, не вызывая сухости и стянутости.",
+    "kk": "Аминқышқылдары бар жұмсақ тазартқыш теріні құрғатпай және тартылтпай, нәзік тазартады."
+  },
+  "price": 0,
+  "currency": "KZT"
+}

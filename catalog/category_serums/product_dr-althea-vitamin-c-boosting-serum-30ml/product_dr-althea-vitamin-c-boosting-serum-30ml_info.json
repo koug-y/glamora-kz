@@ -1,0 +1,23 @@
+{
+  "id": "dr-althea-vitamin-c-boosting-serum-30ml",
+  "categoryId": "serums",
+  "slug": {
+    "ru": "dr-althea-vitamin-c-boosting-serum-30ml",
+    "kk": "dr-althea-vitamin-c-boosting-serum-30ml"
+  },
+  "name": {
+    "ru": "Dr.Althea Vitamin C Boosting Serum 30ml",
+    "kk": "Dr.Althea Vitamin C Boosting Serum 30ml"
+  },
+  "short": {
+    "ru": "Сыворотка с витамином C для осветления пятен.",
+    "kk": "С дәрумені дақтарды ағартуға арналған сарысу."
+  },
+  "description": {
+    "ru": "Витамин С дозировкой % усиленно работает на осветление ваших пятен, следов от прыщей",
+    "kk": "Құрамындағы С дәрумені дақтарды және безеуден қалған іздерді ағартуға қарқынды әсер етеді."
+  },
+  "price": 0,
+  "currency": "KZT",
+  "volume": "30 мл"
+}

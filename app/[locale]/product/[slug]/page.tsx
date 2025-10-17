@@ -1,31 +1,20 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import {
-  LOCALES,
-  type Locale,
-  REVALIDATE,
-  getProductBySlug,
-  PRODUCTS,
-} from "@/data/catalog";
 import { getDict } from "@/data/i18n";
 import { ProductPurchasePanel } from "@/components/ProductPurchasePanel";
-import { getSafeImagePath } from "@/lib/safe-image";
+import { getSafeImagePath, PLACEHOLDER_IMAGE_DATA } from "@/lib/safe-image";
+import {
+  getProductBySlug,
+  DEFAULT_REVALIDATE_SECONDS,
+} from "@/lib/catalog-fs";
+import { LOCALES, type Locale } from "@/lib/locales";
 
-export const revalidate = REVALIDATE;
+export const revalidate = DEFAULT_REVALIDATE_SECONDS;
 
 type PageParams = {
   params: { locale: string; slug: string };
 };
-
-export function generateStaticParams() {
-  return LOCALES.flatMap((locale) =>
-    PRODUCTS.map((product) => ({
-      locale,
-      slug: product.slug[locale],
-    }))
-  );
-}
 
 export async function generateMetadata({
   params,
@@ -36,7 +25,7 @@ export async function generateMetadata({
     notFound();
   }
 
-  const product = getProductBySlug(locale, params.slug);
+  const product = await getProductBySlug(locale, params.slug);
 
   if (!product) {
     notFound();
@@ -46,10 +35,10 @@ export async function generateMetadata({
   const title = product.seo?.[locale]?.title ?? fallbackTitle;
   const description =
     product.seo?.[locale]?.desc ?? product.short[locale] ?? "";
-  const image = getSafeImagePath(product.image);
-  const ogImage = image.startsWith("data:")
+  const primaryImage = getSafeImagePath(product.image ?? "");
+  const ogImage = primaryImage.startsWith("data:")
     ? "/pictures/glamora_logo.jpg"
-    : image;
+    : primaryImage;
 
   return {
     title,
@@ -80,14 +69,14 @@ export async function generateMetadata({
   };
 }
 
-export default function ProductPage({ params }: PageParams) {
+export default async function ProductPage({ params }: PageParams) {
   const locale = params.locale as Locale;
 
   if (!LOCALES.includes(locale)) {
     notFound();
   }
 
-  const product = getProductBySlug(locale, params.slug);
+  const product = await getProductBySlug(locale, params.slug);
 
   if (!product) {
     notFound();
@@ -95,22 +84,48 @@ export default function ProductPage({ params }: PageParams) {
 
   const dict = getDict(locale);
   const cartHref = `/${locale}/cart`;
-  const image = getSafeImagePath(product.image);
-  const isPlaceholder = image.startsWith("data:");
+  const images = product.images.length
+    ? product.images.map((src: string) => getSafeImagePath(src))
+    : [PLACEHOLDER_IMAGE_DATA];
+  const primaryImage = getSafeImagePath(product.image ?? "");
+
+  const isSingleImage = images.length === 1;
 
   return (
     <article className="flex flex-col gap-8">
       <div className="space-y-4">
-        <div className="relative h-72 w-full overflow-hidden rounded-3xl border border-border bg-surface-alt">
-          <Image
-            src={image}
-            alt={product.name[locale]}
-            fill
-            sizes="(min-width: 640px) 320px, 100vw"
-            className="object-contain"
-            unoptimized={isPlaceholder}
-          />
-        </div>
+        {isSingleImage ? (
+          <div className="flex justify-center">
+            <div className="relative h-72 w-full max-w-md overflow-hidden rounded-3xl border border-border bg-surface-alt">
+              <Image
+                src={images[0]}
+                alt={product.name[locale]}
+                fill
+                sizes="(min-width: 640px) 320px, 100vw"
+                className="object-contain"
+                unoptimized={images[0].startsWith("data:")}
+              />
+            </div>
+          </div>
+        ) : (
+          <div className="grid gap-3 sm:grid-cols-2">
+            {images.map((src: string, index: number) => (
+              <div
+                key={src + index}
+                className="relative h-72 w-full overflow-hidden rounded-3xl border border-border bg-surface-alt"
+              >
+                <Image
+                  src={src}
+                  alt={product.name[locale]}
+                  fill
+                  sizes="(min-width: 640px) 320px, 100vw"
+                  className="object-contain"
+                  unoptimized={src.startsWith("data:")}
+                />
+              </div>
+            ))}
+          </div>
+        )}
         <div className="space-y-2">
           <h1 className="text-2xl font-semibold text-ink">
             {product.name[locale]}
@@ -134,7 +149,7 @@ export default function ProductPage({ params }: PageParams) {
             id: product.id,
             name: product.name[locale],
             price: product.price,
-            image,
+            image: primaryImage,
             locale,
           }}
           cartHref={cartHref}

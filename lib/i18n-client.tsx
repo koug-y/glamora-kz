@@ -2,7 +2,7 @@
 
 import { createContext, useContext } from "react";
 import type { Dictionary } from "@/data/i18n";
-import type { Locale } from "@/data/catalog";
+import type { Locale } from "@/lib/locales";
 
 type I18nContextValue = {
   locale: Locale;
@@ -36,4 +36,3 @@ export function useI18n() {
 
   return context;
 }
-

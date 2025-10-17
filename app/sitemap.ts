@@ -1,17 +1,18 @@
 import type { MetadataRoute } from "next";
-import {
-  CATEGORIES,
-  LOCALES,
-  PRODUCTS,
-} from "@/data/catalog";
 import { getBaseUrl } from "@/lib/base-url";
 import { isNoindexSegment } from "@/lib/seo";
+import { getCategories, getProducts } from "@/lib/catalog-fs";
+import { LOCALES } from "@/lib/locales";
 
 const BASE_URL = getBaseUrl();
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const urls: MetadataRoute.Sitemap = [];
   const now = new Date();
+  const [categories, products] = await Promise.all([
+    getCategories(),
+    getProducts(),
+  ]);
 
   for (const locale of LOCALES) {
     urls.push(
@@ -25,14 +26,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
       }))
     );
 
-    for (const category of CATEGORIES) {
+    for (const category of categories) {
       urls.push({
         url: `${BASE_URL}/${locale}/catalog/${category.slug[locale]}`,
         lastModified: now,
       });
     }
 
-    for (const product of PRODUCTS) {
+    for (const product of products) {
       urls.push({
         url: `${BASE_URL}/${locale}/product/${product.slug[locale]}`,
         lastModified: now,

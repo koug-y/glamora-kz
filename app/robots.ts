@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
-import { LOCALES } from "@/data/catalog";
 import { getBaseUrl } from "@/lib/base-url";
 import { buildNoindexPaths } from "@/lib/seo";
+import { LOCALES } from "@/lib/locales";
 
 const BASE_URL = getBaseUrl();
 

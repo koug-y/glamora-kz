@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import type { Locale } from "@/data/catalog";
+import type { Locale } from "@/lib/locales";
 import { PillButton } from "@/components/PillButton";
 import { QtyStepper } from "@/components/QtyStepper";
 import { useI18n } from "@/lib/i18n-client";

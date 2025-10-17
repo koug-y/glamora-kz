@@ -1,4 +1,4 @@
-import type { Locale } from "./catalog";
+import type { Locale } from "@/lib/locales";
 
 type BaseDictionary = {
   common: {
@@ -7,6 +7,7 @@ type BaseDictionary = {
     catalog: string;
     orderNow: string;
     freeConsult: string;
+    whatsappUnavailable: string;
     searchByName: string;
     addToCart: string;
     goToCart: string;
@@ -23,9 +24,6 @@ type BaseDictionary = {
     price: string;
     priceCheck: string;
     volume: string;
-    benefits: string;
-    description: string;
-    ingredients: string;
     continueShopping: string;
     subtotal: string;
     addedToCart: string;
@@ -49,10 +47,7 @@ type BaseDictionary = {
     noResults: string;
   };
   productPage: {
-    benefits: string;
     description: string;
-    ingredients: string;
-    ingredientsEmpty: string;
     volume: string;
     goBack: string;
   };
@@ -84,6 +79,8 @@ const dictionaries: Record<Locale, BaseDictionary> = {
       catalog: "Каталог товаров",
       orderNow: "Хочу заказать",
       freeConsult: "Бесплатная консультация",
+      whatsappUnavailable:
+        "Связь через WhatsApp временно недоступна. Напишите нам другим способом.",
       searchByName: "Поиск по названию",
       addToCart: "В корзину",
       goToCart: "Перейти в корзину",
@@ -100,9 +97,6 @@ const dictionaries: Record<Locale, BaseDictionary> = {
       price: "Цена",
       priceCheck: "Уточните цену у продавца",
       volume: "Объем",
-      benefits: "Преимущества",
-      description: "Описание",
-      ingredients: "Состав",
       continueShopping: "Продолжить покупки",
       subtotal: "Промежуточный итог",
       addedToCart: "Товар добавлен в корзину",
@@ -132,10 +126,7 @@ const dictionaries: Record<Locale, BaseDictionary> = {
       noResults: "Нет товаров по вашему запросу. Попробуйте другой фильтр.",
     },
     productPage: {
-      benefits: "Преимущества",
       description: "Описание",
-      ingredients: "Состав",
-      ingredientsEmpty: "Состав уточняется",
       volume: "Объем",
       goBack: "Назад к каталогу",
     },
@@ -178,6 +169,8 @@ const dictionaries: Record<Locale, BaseDictionary> = {
       catalog: "Тауарлар каталогы",
       orderNow: "Тапсырыс бергім келеді",
       freeConsult: "Тегін консультация",
+      whatsappUnavailable:
+        "WhatsApp арқылы байланыс уақытша қолжетімсіз. Басқа арна арқылы жазыңыз.",
       searchByName: "Атауы бойынша іздеу",
       addToCart: "Себетке қосу",
       goToCart: "Себетке өту",
@@ -194,9 +187,6 @@ const dictionaries: Record<Locale, BaseDictionary> = {
       price: "Бағасы",
       priceCheck: "Бағаны сатушыдан нақтылаңыз",
       volume: "Көлемі",
-      benefits: "Артықшылықтары",
-      description: "Сипаттама",
-      ingredients: "Құрамы",
       continueShopping: "Сатып алуды жалғастыру",
       subtotal: "Аралық сома",
       addedToCart: "Тауар себетке қосылды",
@@ -226,10 +216,7 @@ const dictionaries: Record<Locale, BaseDictionary> = {
       noResults: "Сұраныс бойынша тауар табылмады. Басқа сөзді қолданып көріңіз.",
     },
     productPage: {
-      benefits: "Артықшылықтары",
       description: "Сипаттама",
-      ingredients: "Құрамы",
-      ingredientsEmpty: "Құрамы нақтылануда",
       volume: "Көлемі",
       goBack: "Каталогқа оралу",
     },
