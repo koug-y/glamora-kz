@@ -82,7 +82,7 @@ export default function LocaleHomePage({ params }: PageParams) {
           <h2 className="text-2xl font-semibold text-ink">
             {dict.common.brand}
           </h2>
-          <div className="space-y-2 text-sm leading-relaxed text-mutedInk">
+          <div className="space-y-2 text-base font-medium leading-relaxed text-mutedInk">
             {dict.home.heroTaglineLines.map((line) => (
               <p key={line}>{line}</p>
             ))}
