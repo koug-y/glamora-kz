@@ -39,7 +39,15 @@ Open http://localhost:3000 and you will be redirected to `/ru`. Switch locales w
 - `npm run start` – run the production build
 - `npm run lint` – run ESLint
 - `npm run validate:catalog` – validate the catalog hub structure with Zod
-- `npm run test` – run Vitest unit/component tests
+
+## Deployment
+
+- Production hosting runs on Vercel (`koug-ys-projects/glamora-kz`), connected to this GitHub repo.
+- Pushing to the `main` branch kicks off an automatic production deployment; no manual CLI deploy is required for routine updates.
+- `vercel.json` pins the Next.js build step so Vercel always uses the Next.js runtime instead of static output.
+- Day-to-day flow: make your changes locally, run `git commit`, then `git push origin main`; Vercel picks up the push and rebuilds production.
+- To observe deployments, open the Vercel dashboard (Project → Deployments) or run `npx vercel list glamora-kz`.
+- If you do need an ad-hoc deploy, `npx vercel --prod` still works, but the Git-based flow is the source of truth.
 
 ## Project Structure
 
@@ -178,3 +186,4 @@ Feel free to adjust catalog data or translations in `data/` and drop new product
 - Deployed the latest catalog/content updates with `vercel deploy --prod` (commit authored as `koug-y <koug.y@icloud.com>` to satisfy team policy) and pointed the production alias at `https://glamora-kz.vercel.app`.
 
 - Consolidated catalog categories by moving the niacinamide serum product into the general serums collection and removing the redundant dedicated category. Documented slug derivation fallbacks for localized names within the loader.
+- Updated the home hero tagline typography to match the CTA button font for consistent branding.
